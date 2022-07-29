@@ -13,6 +13,7 @@ export default function LotteryEntrance() {
     const [entranceFee, setEntranceFee] = useState("0")
     const [numberOfPlayers, setNumberOfPlayers] = useState("0")
     const [recentWinner, setRecentWinner] = useState("0")
+    const [interval, setInterval] = useState("0")
     const dispatch = useNotification()
 
     const {
@@ -48,19 +49,28 @@ export default function LotteryEntrance() {
         params: {},
     })
 
+    const { runContractFunction: getInterval } = useWeb3Contract({
+        abi: abi,
+        contractAddress: raffleAddress,
+        functionName: "getInterval",
+        params: {},
+    })
+
     useEffect(() => {
         if (isWeb3Enabled) {
             updateUI()
         }
-    }, [isWeb3Enabled])
+    }, [isWeb3Enabled, entranceFee, numberOfPlayers, interval, recentWinner])
 
     async function updateUI() {
         const entranceFeeFromCall = (await getEntranceFee()).toString()
         const numPlayersFromCall = (await getPlayersNumber()).toString()
         const recentWinnerFromCall = await getRecentWinner()
+        const intervalFromCall = (await getInterval()).toString()
         setEntranceFee(entranceFeeFromCall)
         setNumberOfPlayers(numPlayersFromCall)
         setRecentWinner(recentWinnerFromCall)
+        setInterval(intervalFromCall)
     }
 
     function handleNewNotification() {
@@ -103,11 +113,38 @@ export default function LotteryEntrance() {
                             <div>Enter raffle</div>
                         )}
                     </button>
+                    <div>
+                        Chain ID :{" "}
+                        <b>
+                            {chainId} |{" "}
+                            {(() => {
+                                switch (chainId) {
+                                    case 31337:
+                                        return "Hardhat localhost"
+                                    case 4:
+                                        return "Rinkeby"
+                                    default:
+                                        return "Blockchain not compatible "
+                                }
+                            })()}
+                        </b>
+                    </div>
                     <div className="">
                         Entrance fee : <b>{ethers.utils.formatUnits(entranceFee, "ether")} ETH</b>
                     </div>
                     <div>
                         Number of players : <b>{numberOfPlayers}</b>
+                    </div>
+                    <div>
+                        Time interval between each lottery draw : {""}
+                        {}
+                        <b>
+                            {Math.floor(interval / 60 / 60) >= 1
+                                ? Math.floor(interval / 60 / 60)`h`
+                                : ""}{" "}
+                            {Math.floor(interval / 60)}min {""}
+                            {interval % 60 < 10 ? `0${interval % 60}` : interval % 60}sec
+                        </b>
                     </div>
                     <div>
                         Recent winner : <b>{recentWinner}</b>

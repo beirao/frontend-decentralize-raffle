@@ -1,11 +1,14 @@
 # Decentralize Lottery
 
 IPFS link : https://muddy-resonance-1970.on.fleek.co/
-Only on Rinkeby or Hardhat node
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+**Only on Rinkeby or Hardhat node**
+
+Get rinkebyETH here : https://faucets.chain.link/rinkeby
 
 ## Getting Started
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 First, run the development server:
 
