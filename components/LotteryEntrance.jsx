@@ -9,6 +9,7 @@ export default function LotteryEntrance() {
     const { chainId: chainIdHex, isWeb3Enabled } = useMoralis() //pull out chainId obj and rename it as chainIdHex
     const chainId = parseInt(chainIdHex) //create new var called chainId
     const raffleAddress = chainId in contractAddresses ? contractAddresses[chainId][0] : null
+    console.log("raffleAddress", raffleAddress)
 
     const [entranceFee, setEntranceFee] = useState("0")
     const [numberOfPlayers, setNumberOfPlayers] = useState("0")
@@ -93,10 +94,11 @@ export default function LotteryEntrance() {
     msgValue: return (
         <div className="p-5">
             {/* Hi from lottery entrance */}
-            {raffleAddress ? (
-                <div>
+
+            <div>
+                {raffleAddress ? (
                     <button
-                        className="bg-green-200 hover:bg-green-500 flex-5 front-bold py-2 px-4 rounded-sm ml-auto w-64"
+                        className="bg-green-400 hover:bg-green-500 flex-5 front-bold py-2 px-4 rounded-sm ml-auto w-64"
                         onClick={async function () {
                             await enterRaffle({
                                 // onComplete:
@@ -113,46 +115,53 @@ export default function LotteryEntrance() {
                             <div>Enter raffle</div>
                         )}
                     </button>
-                    <div>
-                        Chain ID :{" "}
-                        <b>
-                            {chainId} |{" "}
-                            {(() => {
-                                switch (chainId) {
-                                    case 31337:
-                                        return "Hardhat localhost"
-                                    case 4:
-                                        return "Rinkeby"
-                                    default:
-                                        return "Blockchain not compatible "
-                                }
-                            })()}
-                        </b>
-                    </div>
-                    <div className="">
-                        Entrance fee : <b>{ethers.utils.formatUnits(entranceFee, "ether")} ETH</b>
-                    </div>
-                    <div>
-                        Number of players : <b>{numberOfPlayers}</b>
-                    </div>
-                    <div>
-                        Time interval between each lottery draw : {""}
-                        {}
-                        <b>
-                            {Math.floor(interval / 60 / 60) >= 1
-                                ? Math.floor(interval / 60 / 60)`h`
-                                : ""}{" "}
-                            {Math.floor(interval / 60)}min {""}
-                            {interval % 60 < 10 ? `0${interval % 60}` : interval % 60}sec
-                        </b>
-                    </div>
-                    <div>
-                        Recent winner : <b>{recentWinner}</b>
-                    </div>
+                ) : (
+                    <button
+                        className="bg-green-400 hover:bg-green-500 flex-5 front-bold py-2 px-4 rounded-sm ml-auto w-64"
+                        disabled={true}
+                    >
+                        No wallet detected : connect to Rinkeby
+                    </button>
+                )}
+                <div>
+                    Chain ID :{" "}
+                    <b>
+                        {chainId} |{" "}
+                        {(() => {
+                            switch (true) {
+                                case chainId == 31337:
+                                    return "Hardhat localhost"
+                                case chainId == 4:
+                                    return "Rinkeby"
+                                case chainId > 0:
+                                    return "Blockchain not compatible "
+                                default:
+                                    return "Not connected"
+                            }
+                        })()}
+                    </b>
                 </div>
-            ) : (
-                <div>No raffle adrress detected</div>
-            )}
+                <div className="">
+                    Entrance fee : <b>{ethers.utils.formatUnits(entranceFee, "ether")} ETH</b>
+                </div>
+                <div>
+                    Number of players : <b>{numberOfPlayers}</b>
+                </div>
+                <div>
+                    Time interval between each lottery draw : {""}
+                    {}
+                    <b>
+                        {Math.floor(interval / 60 / 60) >= 1
+                            ? Math.floor(interval / 60 / 60)`h`
+                            : ""}{" "}
+                        {Math.floor(interval / 60)}min {""}
+                        {interval % 60 < 10 ? `0${interval % 60}` : interval % 60}sec
+                    </b>
+                </div>
+                <div>
+                    Recent winner : <b>{recentWinner}</b>
+                </div>
+            </div>
         </div>
     )
 }
